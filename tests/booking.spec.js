@@ -19,3 +19,16 @@ test ('should book an appointment with valid details', async ({page}) => {
     await expect(page.getByText(name, {exact: true})).toBeVisible();
     await expect(page.getByTestId('confirmation-when')).toHaveText(`${weekday}, ${month} ${day} · ${time}`);
 })
+
+test ('TC_BOOK_001: empty form shows all required field errors', async ({page}) => {
+    const bookingPage = new BookingPage(page);
+
+    await bookingPage.goto();
+    await bookingPage.confirmBooking();
+
+    await expect(bookingPage.timeError).toHaveText('Pick a time slot');
+    await expect(bookingPage.nameError).toHaveText('Enter the patient name');
+    await expect(bookingPage.phoneError).toHaveText('Enter a 10-digit phone number');
+
+    await expect(bookingPage.confirmationHeading).not.toBeVisible();
+})
