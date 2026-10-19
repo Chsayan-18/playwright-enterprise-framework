@@ -8,6 +8,10 @@ export class BookingPage {
         this.dateRadioGroup = page.getByRole('radiogroup', {name: 'Appointment date'});
         this.timeRadioGroup = page.getByRole('radiogroup', {name: 'Appointment time'});
         this.notesInput = page.getByLabel('Notes for the doctor (optional)');
+        this.timeError = page.getByTestId('error-time');
+        this.nameError = page.getByTestId('error-name');
+        this.phoneError = page.getByTestId('error-phone');
+        this.confirmationHeading = page.getByRole('heading', {name: 'Appointment confirmed'});
     }
 
     async selectDateByPosition (position) {
