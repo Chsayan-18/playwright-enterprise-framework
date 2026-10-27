@@ -45,3 +45,31 @@ test ("TC_BOOK_002: phone number with 9 digits is rejected", async () => {
     await expect(bookingPage.nameError).toBeHidden();
     await expect(bookingPage.confirmationHeading).toBeHidden();
 })
+
+test ("TC_BOOK_004: User recovers from validation errors and completes the booking", async ({page}) => {
+    const name = 'Sayan';
+    const phone = '9876543210';
+    
+    await bookingPage.confirmBooking();
+
+    await expect(bookingPage.timeError).toHaveText('Pick a time slot');
+    await expect(bookingPage.nameError).toHaveText('Enter the patient name');
+    await expect(bookingPage.phoneError).toHaveText('Enter a 10-digit phone number');
+    await expect(bookingPage.confirmButton).toBeEnabled();
+    await expect(bookingPage.confirmationHeading).toBeHidden();
+
+    const {weekday, day, month} = await bookingPage.selectDateByPosition(0);
+    const time = await bookingPage.selectTimeByPosition(0);
+    await bookingPage.fillPatientDetails(name, phone);
+    await bookingPage.confirmBooking();
+
+    await expect(bookingPage.confirmationHeading).toHaveText('Appointment confirmed');
+
+    await expect(bookingPage.timeError).toBeHidden();
+    await expect(bookingPage.nameError).toBeHidden();
+    await expect(bookingPage.phoneError).toBeHidden();
+
+    await expect(page.getByTestId('confirmation-when')).toHaveText(`${weekday}, ${month} ${day} · ${time}`);
+    await expect(page.getByText(name, {exact: true})).toBeVisible();
+    await expect(page.getByTestId('confirmation-doctor')).toHaveText('Dr. Vikram Shah');
+})
