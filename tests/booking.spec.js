@@ -19,10 +19,10 @@ test ("should book an appointment with valid details", async ({page}) => {
     await bookingPage.fillPatientDetails(name,phone);
     await bookingPage.confirmBooking();
 
-    await expect(page.getByRole('heading', {name: 'Appointment confirmed'})).toBeVisible();
-    await expect(page.getByTestId('confirmation-doctor')).toHaveText('Dr. Vikram Shah');
+    await expect(bookingPage.confirmationHeading).toBeVisible();
+    await expect(bookingPage.confirmationDoctor).toHaveText('Dr. Vikram Shah');
     await expect(page.getByText(name, {exact: true})).toBeVisible();
-    await expect(page.getByTestId('confirmation-when')).toHaveText(`${weekday}, ${month} ${day} · ${time}`);
+    await expect(bookingPage.confirmationWhen).toHaveText(`${weekday}, ${month} ${day} · ${time}`);
 })
 
 test ("TC_BOOK_001: empty form shows all required field errors", async () => {
@@ -63,13 +63,13 @@ test ("TC_BOOK_004: User recovers from validation errors and completes the booki
     await bookingPage.fillPatientDetails(name, phone);
     await bookingPage.confirmBooking();
 
-    await expect(bookingPage.confirmationHeading).toHaveText('Appointment confirmed');
+    await expect(bookingPage.confirmationHeading).toBeVisible();
 
     await expect(bookingPage.timeError).toBeHidden();
     await expect(bookingPage.nameError).toBeHidden();
     await expect(bookingPage.phoneError).toBeHidden();
 
-    await expect(page.getByTestId('confirmation-when')).toHaveText(`${weekday}, ${month} ${day} · ${time}`);
+    await expect(bookingPage.confirmationWhen).toHaveText(`${weekday}, ${month} ${day} · ${time}`);
     await expect(page.getByText(name, {exact: true})).toBeVisible();
-    await expect(page.getByTestId('confirmation-doctor')).toHaveText('Dr. Vikram Shah');
+    await expect(bookingPage.confirmationDoctor).toHaveText('Dr. Vikram Shah');
 })

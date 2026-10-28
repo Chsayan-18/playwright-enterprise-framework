@@ -12,6 +12,8 @@ export class BookingPage {
         this.nameError = page.getByTestId('error-name');
         this.phoneError = page.getByTestId('error-phone');
         this.confirmationHeading = page.getByRole('heading', {name: 'Appointment confirmed'});
+        this.confirmationDoctor = page.getByTestId('confirmation-doctor');
+        this.confirmationWhen = page.getByTestId('confirmation-when');
     }
 
     async selectDateByPosition (position) {
