@@ -14,6 +14,7 @@ export class BookingPage {
         this.confirmationHeading = page.getByRole('heading', {name: 'Appointment confirmed'});
         this.confirmationDoctor = page.getByTestId('confirmation-doctor');
         this.confirmationWhen = page.getByTestId('confirmation-when');
+        this.viewMyAppointmentsButton = page.getByRole('button', {name: 'View my appointments'});
     }
 
     async selectDateByPosition (position) {
@@ -44,5 +45,9 @@ export class BookingPage {
             localStorage.setItem('pqa_tour_seen_v1', '1');
         });
         await this.page.goto('/clinic/book/d-vikram-shah');
+    }
+
+    async viewMyAppointments () {
+        await this.viewMyAppointmentsButton.click();
     }
 }
