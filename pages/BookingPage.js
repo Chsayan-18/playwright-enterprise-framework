@@ -50,4 +50,14 @@ export class BookingPage {
     async viewMyAppointments () {
         await this.viewMyAppointmentsButton.click();
     }
+
+    async bookAppointment ({name, phone, reason, notes}) {
+        await this.selectTimeByPosition(0);
+        await this.fillPatientDetails(name, phone);
+        await this.reasonSelect.selectOption({label: reason});
+        if (notes !== undefined){
+            await this.notesInput.fill(notes);
+        }
+        await this.confirmBooking();
+    }
 }

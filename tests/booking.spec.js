@@ -76,9 +76,11 @@ test ("TC_BOOK_004: User recovers from validation errors and completes the booki
 })
 
 test ("TC_BOOK_005: booking with reason and notes appears in My appointments", async ({page}) => {
+    const reason = 'Follow-up visit';
+    
     await bookingPage.selectTimeByPosition(0);
     await bookingPage.fillPatientDetails('Sayan 005', '9876543210');
-    await bookingPage.reasonSelect.selectOption({label: 'Follow-up visit'});
+    await bookingPage.reasonSelect.selectOption({label: reason});
     await bookingPage.notesInput.fill('TC_BOOK_005 notes');
     await bookingPage.confirmBooking();
 
@@ -91,8 +93,26 @@ test ("TC_BOOK_005: booking with reason and notes appears in My appointments", a
 
     const myAppointmentsPage = new MyAppointmentsPage(page);
     const card = myAppointmentsPage.appointmentCard('Sayan 005');
-    const reason = 'Follow-up visit';
     await expect(card).toBeVisible();
     await expect(card).toContainText(`Reason: ${reason}`);
     await expect(card.locator('.clinic-appt-card-notes')).toContainText('TC_BOOK_005 notes');
+})
+
+test ("TC_BOOK_006: booking without notes shows no note line in My appointments", async ({page}) => {
+    const reason = 'Lab report review';
+    const name = 'Sayan 006';
+    const phone = '9876543210';
+    const myAppointmentPage = new MyAppointmentsPage (page);
+    const card = myAppointmentPage.appointmentCard(name);
+
+    await bookingPage.bookAppointment({name, phone, reason});
+
+    await expect(bookingPage.confirmationHeading).toBeVisible();
+    await expect(page.getByText(name, {exact: true})).toBeVisible();
+
+    await bookingPage.viewMyAppointments();
+
+    await expect(card).toBeVisible();
+    await expect(card).toContainText(`Reason: ${reason}`);
+    await expect(card.locator('.clinic-appt-card-notes')).toBeHidden();
 })
