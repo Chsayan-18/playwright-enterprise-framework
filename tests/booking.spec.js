@@ -116,3 +116,45 @@ test ("TC_BOOK_006: booking without notes shows no note line in My appointments"
     await expect(card).toContainText(`Reason: ${reason}`);
     await expect(card.locator('.clinic-appt-card-notes')).toBeHidden();
 })
+
+test ("TC_BOOK_007: booking with blank spaces in notes", async ({page}) => {
+    const reason = 'Second opinion';
+    const name = 'Sayan 007';
+    const phone = '9876543210';
+    const notes = '   ';
+    const myAppointmentsPage = new MyAppointmentsPage(page);
+
+    await bookingPage.bookAppointment({name, reason, phone, notes});
+
+    await expect(bookingPage.confirmationHeading).toBeVisible();
+    await expect(page.getByText(name, {exact: true})).toBeVisible();
+
+    await bookingPage.viewMyAppointments();
+
+    const card = await myAppointmentsPage.appointmentCard(name);
+
+    await expect(card).toBeVisible();
+    await expect(card).toContainText(`Reason: ${reason}`);
+    await expect(card.locator('.clinic-appt-card-notes')).toHaveCount(0);
+})
+
+test ("TC_BOOK_008: booking with notes containing HTML tags", async ({page}) => {
+    const reason = 'New symptom / concern';
+    const name = 'Sayan 008';
+    const phone = '9876543210';
+    const notes = '<b>TC_BOOK_008 notes</b>';
+    const myAppointmentsPage = new MyAppointmentsPage(page);
+
+    await bookingPage.bookAppointment({name, reason, phone, notes});
+
+    await expect(bookingPage.confirmationHeading).toBeVisible();
+    await expect(page.getByText(name, {exact: true})).toBeVisible();
+
+    await bookingPage.viewMyAppointments();
+
+    const card = await myAppointmentsPage.appointmentCard(name);
+
+    await expect(card).toBeVisible();
+    await expect(card).toContainText(`Reason: ${reason}`);
+    await expect(card.locator('.clinic-appt-card-notes')).toContainText(notes);
+})
