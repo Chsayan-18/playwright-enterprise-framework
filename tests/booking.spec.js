@@ -117,7 +117,7 @@ test ("TC_BOOK_006: booking without notes shows no note line in My appointments"
     await expect(card.locator('.clinic-appt-card-notes')).toBeHidden();
 })
 
-test ("TC_BOOK_007: booking with blank spaces in notes", async ({page}) => {
+test ("TC_BOOK_007: whitespace-only notes are not shown in My appointments", async ({page}) => {
     const reason = 'Second opinion';
     const name = 'Sayan 007';
     const phone = '9876543210';
@@ -131,7 +131,7 @@ test ("TC_BOOK_007: booking with blank spaces in notes", async ({page}) => {
 
     await bookingPage.viewMyAppointments();
 
-    const card = await myAppointmentsPage.appointmentCard(name);
+    const card = myAppointmentsPage.appointmentCard(name);
 
     await expect(card).toBeVisible();
     await expect(card).toContainText(`Reason: ${reason}`);
@@ -152,9 +152,10 @@ test ("TC_BOOK_008: booking with notes containing HTML tags", async ({page}) => 
 
     await bookingPage.viewMyAppointments();
 
-    const card = await myAppointmentsPage.appointmentCard(name);
+    const card = myAppointmentsPage.appointmentCard(name);
 
     await expect(card).toBeVisible();
     await expect(card).toContainText(`Reason: ${reason}`);
     await expect(card.locator('.clinic-appt-card-notes')).toContainText(notes);
+    await expect(card.locator('.clinic-appt-card-notes b')).toHaveCount(0);
 })
